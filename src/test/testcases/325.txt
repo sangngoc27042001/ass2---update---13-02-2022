@@ -1,0 +1,8 @@
+
+        Class A {
+            $foo(){
+                Var a:Int = 2/3;
+                a=1;
+            }
+        }
+        

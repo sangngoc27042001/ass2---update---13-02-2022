@@ -1,0 +1,8 @@
+
+        Class A {
+            Var $b:Int = 1;
+            foo(){
+                Var a:Int = 1;
+            }
+        }
+        

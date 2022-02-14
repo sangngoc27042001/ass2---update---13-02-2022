@@ -1,0 +1,5 @@
+
+        Class A {
+            Val b:Int = New a(1+2,Null);
+        }
+        

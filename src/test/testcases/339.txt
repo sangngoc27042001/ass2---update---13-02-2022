@@ -1,0 +1,8 @@
+
+        Class A:B{
+            Var a, b, c:Int;
+            Foo(){
+                Var a, b, c:Int;
+            }
+        }
+        

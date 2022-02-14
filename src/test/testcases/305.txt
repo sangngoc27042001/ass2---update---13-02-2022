@@ -1,0 +1,5 @@
+
+        Class A {
+            Var a:Array[Int,5];
+        }
+        

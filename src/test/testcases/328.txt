@@ -1,0 +1,7 @@
+
+        Class A {
+            foo(){
+                a.b.c="abc";
+            }
+        }
+        

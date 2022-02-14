@@ -1,0 +1,5 @@
+
+        Class A:B{
+            Var a,$b:Int;
+        }
+        

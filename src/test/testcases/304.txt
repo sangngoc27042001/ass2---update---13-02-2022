@@ -1,0 +1,6 @@
+
+        Class A {
+            Var a:Int;
+            Var b:Int;
+        }
+        

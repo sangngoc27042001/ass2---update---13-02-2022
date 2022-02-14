@@ -1,0 +1,7 @@
+
+        Class A {
+            foo(){
+                Var a:Int;
+            }
+        }
+        

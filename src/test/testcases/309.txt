@@ -1,0 +1,5 @@
+
+        Class A {
+            Var a:Int="abc"+.1+2;
+        }
+        

@@ -1,0 +1,5 @@
+
+        Class A:B{
+            Var $a:Array[Array[Int,1],3] = Array(Array(1),Array(1),Array(1));
+        }
+        
