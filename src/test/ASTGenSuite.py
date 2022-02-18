@@ -535,3 +535,59 @@ class ASTGenSuite(unittest.TestCase):
         line = '''Class R:_{foo(){New a(1).a();}}'''
         expect = '''Program([ClassDecl(Id(R),Id(_),[MethodDecl(Id(foo),Instance,[],Block([Call(NewExpr(Id(a),[IntLit(1)]),Id(a),[])]))])])'''
         self.assertTrue(TestAST.test(line, expect, 360))
+    def test_361(self):
+        line = '''
+                Class Shape2 {
+            $getNumOfShape() {
+                If (a == (1+1) ){
+                    Var b,c:Boolean = True, False;
+                }
+                Foreach (i In 1 .. 100 By 2) {
+                     Var a:Boolean = True;
+                }
+            }
+        }
+        '''
+        expect = '''Program([ClassDecl(Id(Shape2),[MethodDecl(Id($getNumOfShape),Static,[],Block([If(BinaryOp(==,Id(a),BinaryOp(+,IntLit(1),IntLit(1))),Block([VarDecl(Id(b),BoolType,BooleanLit(True)),VarDecl(Id(c),BoolType,BooleanLit(False))])),For(Id(i),IntLit(1),IntLit(100),IntLit(2),Block([VarDecl(Id(a),BoolType,BooleanLit(True))])])]))])])'''
+        self.assertTrue(TestAST.test(line, expect, 361))
+    def test_362(self):
+        line = """
+                Class Shape{
+                    foo(){
+                        Foreach (x In 1+1 .. 100+100 By a.foo(1+2*3,"abc"+.1+2)){}
+                    }
+                }
+            """
+        expect = '''Program([ClassDecl(Id(Shape),[MethodDecl(Id(foo),Instance,[],Block([For(Id(x),BinaryOp(+,IntLit(1),IntLit(1)),BinaryOp(+,IntLit(100),IntLit(100)),CallExpr(Id(a),Id(foo),[BinaryOp(+,IntLit(1),BinaryOp(*,IntLit(2),IntLit(3))),BinaryOp(+.,StringLit(abc),BinaryOp(+,IntLit(1),IntLit(2)))]),Block([])])]))])])'''
+        self.assertTrue(TestAST.test(line, expect, 362))
+    def test_363(self):
+        line = """
+                Class Shape{
+                    foo(){
+                        Foreach (x In a::$b() .. a.c.c.c By a::$foo){
+                            Foreach (x In a::$b() .. a.c.c.c By a::$foo){}
+                        }
+                    }
+                }   
+                """
+        expect = '''Program([ClassDecl(Id(Shape),[MethodDecl(Id(foo),Instance,[],Block([For(Id(x),CallExpr(Id(a),Id($b),[]),FieldAccess(FieldAccess(FieldAccess(Id(a),Id(c)),Id(c)),Id(c)),FieldAccess(Id(a),Id($foo)),Block([For(Id(x),CallExpr(Id(a),Id($b),[]),FieldAccess(FieldAccess(FieldAccess(Id(a),Id(c)),Id(c)),Id(c)),FieldAccess(Id(a),Id($foo)),Block([])])])])]))])])'''
+        self.assertTrue(TestAST.test(line, expect, 363))
+    def test_364(self):
+        line = """
+                Class Shape{
+                    foo(){
+                        If ( a == -1--1){
+                            Foreach(x In 1 .. 100 By 2){
+                                If ( a == -1--1){
+                                    Foreach(x In 1 .. 100 By 2){
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }   
+                """
+
+        expect = '''Program([ClassDecl(Id(Shape),[MethodDecl(Id(foo),Instance,[],Block([If(BinaryOp(==,Id(a),BinaryOp(-,UnaryOp(-,IntLit(1)),UnaryOp(-,IntLit(1)))),Block([For(Id(x),IntLit(1),IntLit(100),IntLit(2),Block([If(BinaryOp(==,Id(a),BinaryOp(-,UnaryOp(-,IntLit(1)),UnaryOp(-,IntLit(1)))),Block([For(Id(x),IntLit(1),IntLit(100),IntLit(2),Block([])])]))])])]))]))])])'''
+        self.assertTrue(TestAST.test(line, expect, 364))

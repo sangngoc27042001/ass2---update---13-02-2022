@@ -1,0 +1,7 @@
+
+                Class Shape{
+                    foo(){
+                        Foreach (x In 1+1 .. 100+100 By a.foo(1+2*3,"abc"+.1+2)){}
+                    }
+                }
+            

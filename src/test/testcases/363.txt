@@ -1,0 +1,9 @@
+
+                Class Shape{
+                    foo(){
+                        Foreach (x In a::$b() .. a.c.c.c By a::$foo){
+                            Foreach (x In a::$b() .. a.c.c.c By a::$foo){}
+                        }
+                    }
+                }   
+                

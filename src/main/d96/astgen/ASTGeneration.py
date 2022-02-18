@@ -405,6 +405,14 @@ class ASTGeneration(D96Visitor):
             method = Id(ctx.ID().getText())
             param = self.visit(ctx.listOfExpressions())
             return CallStmt(obj, method, param)
+
+    def visitStmForEach(self, ctx:D96Parser.StmForEachContext):
+        id = Id(ctx.ID().getText())
+        expr1 = self.visit(ctx.expression(0))
+        expr2 = self.visit(ctx.expression(1))
+        loop = self.visit(ctx.stmBlockInFunction())
+        expr3 = self.visit(ctx.expression(2)) if ctx.BY() else None
+        return For(id, expr1, expr2, loop, expr3)
 ############################################
 ################ CODE Ở ĐÂY ################
 ############################################
