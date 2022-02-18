@@ -341,12 +341,12 @@ class ASTGeneration(D96Visitor):
     def visitStmConstructorDecl(self, ctx:D96Parser.StmConstructorDeclContext):
         param = self.visit(ctx.parameterList())
         body = self.visit(ctx.stmBlockInFunction())
-        return [MethodDecl(Instance(),Id('Constructor'),param,body)]
+        return [MethodDecl(Instance(),Id('''"Constructor"'''),param,body)]
 
     def visitStmdDestructorDecl(self, ctx:D96Parser.StmdDestructorDeclContext):
         param = []
         body = self.visit(ctx.stmBlockInFunction())
-        return [MethodDecl(Instance(),Id('Destructor'),param,body)]
+        return [MethodDecl(Instance(),Id('''"Destructor"'''),param,body)]
 
     def visitStmIf(self, ctx:D96Parser.StmIfContext):
         if (len(ctx.statementInFunction())<=2 and ctx.ELSE()) or len(ctx.statementInFunction())==1:
