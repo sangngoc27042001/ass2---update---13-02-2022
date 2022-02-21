@@ -1,0 +1,9 @@
+
+        Class Program{
+            main(){}
+            main(a,b,c:Int){}
+        }
+        Class DelPhaiProgram{
+            main(){}
+        }
+        

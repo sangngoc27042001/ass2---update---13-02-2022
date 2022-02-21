@@ -5,5 +5,5 @@
                             Foreach (x In a::$b() .. a.c.c.c By a::$foo){}
                         }
                     }
-                }   
+                }
                 

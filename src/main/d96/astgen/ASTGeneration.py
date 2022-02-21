@@ -250,6 +250,16 @@ class ASTGeneration(D96Visitor):
             name = Id(ctx.ID().getText())
         if ctx.parameterList():
             param=self.visit(ctx.parameterList())
+        if not ctx.STATICID() and ctx.ID().getText() == 'main':
+            classBody = ctx.parentCtx
+            classDecl = classBody.parentCtx
+            class_name = classDecl.ID(0).getText()
+
+            if class_name == 'Program':
+                if len(param) == 0:
+                    kind = Static()
+                    name = Id(ctx.ID().getText())
+                    return [MethodDecl(kind, name, param, body)]
         return [MethodDecl(kind, name,param,body)]
 
     def visitParameterList(self, ctx:D96Parser.ParameterListContext):

@@ -568,7 +568,7 @@ class ASTGenSuite(unittest.TestCase):
                             Foreach (x In a::$b() .. a.c.c.c By a::$foo){}
                         }
                     }
-                }   
+                }
                 """
         expect = '''Program([ClassDecl(Id(Shape),[MethodDecl(Id(foo),Instance,[],Block([For(Id(x),CallExpr(Id(a),Id($b),[]),FieldAccess(FieldAccess(FieldAccess(Id(a),Id(c)),Id(c)),Id(c)),FieldAccess(Id(a),Id($foo)),Block([For(Id(x),CallExpr(Id(a),Id($b),[]),FieldAccess(FieldAccess(FieldAccess(Id(a),Id(c)),Id(c)),Id(c)),FieldAccess(Id(a),Id($foo)),Block([])])])])]))])])'''
         self.assertTrue(TestAST.test(line, expect, 363))
@@ -586,8 +586,21 @@ class ASTGenSuite(unittest.TestCase):
                             }
                         }
                     }
-                }   
+                }
                 """
 
         expect = '''Program([ClassDecl(Id(Shape),[MethodDecl(Id(foo),Instance,[],Block([If(BinaryOp(==,Id(a),BinaryOp(-,UnaryOp(-,IntLit(1)),UnaryOp(-,IntLit(1)))),Block([For(Id(x),IntLit(1),IntLit(100),IntLit(2),Block([If(BinaryOp(==,Id(a),BinaryOp(-,UnaryOp(-,IntLit(1)),UnaryOp(-,IntLit(1)))),Block([For(Id(x),IntLit(1),IntLit(100),IntLit(2),Block([])])]))])])]))]))])])'''
         self.assertTrue(TestAST.test(line, expect, 364))
+    def test_365(self):
+        line = """
+        Class Program{
+            main(){}
+            main(a,b,c:Int){}
+        }
+        Class DelPhaiProgram{
+            main(){}
+        }
+        """
+
+        expect = '''Program([ClassDecl(Id(Program),[MethodDecl(Id(main),Static,[],Block([])),MethodDecl(Id(main),Instance,[param(Id(a),IntType),param(Id(b),IntType),param(Id(c),IntType)],Block([]))]),ClassDecl(Id(DelPhaiProgram),[MethodDecl(Id(main),Instance,[],Block([]))])])'''
+        self.assertTrue(TestAST.test(line, expect, 365))
