@@ -1,6 +1,0 @@
-
-        Class A:B{
-            Var a,$b:Int = 1,2;
-            Val $c,d:Boolean = True, Null;
-        }
-        

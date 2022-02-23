@@ -1,5 +1,0 @@
-
-        Class A {
-            Var $b:Float=6.9;
-        }
-        

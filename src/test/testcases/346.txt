@@ -1,9 +1,0 @@
-
-        Class A:B{
-            Foo(){
-                If(1){}
-                If(2){}Else{}
-                If(3){}Elseif(4){}Else{a=1;}
-            }
-        }
-        

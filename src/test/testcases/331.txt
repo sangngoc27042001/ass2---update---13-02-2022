@@ -1,7 +1,0 @@
-
-        Class A {
-            foo(){
-                Var a:Array[Array[Int,5],5];
-            }
-        }
-        

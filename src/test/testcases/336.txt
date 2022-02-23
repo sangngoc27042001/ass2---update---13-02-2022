@@ -1,9 +1,0 @@
-
-        Class A:B{
-            foo(){
-                Return Self.foo();
-            }
-            Constructor (a,b:J){}
-            Destructor (){}
-        }
-        

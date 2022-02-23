@@ -1,9 +1,0 @@
-
-        Class A {
-            foo(){
-                Var a:Int = 1;
-                Var b:Float = 1.0;
-                Val c:Boolean = True;
-            }
-        }
-        

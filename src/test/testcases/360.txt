@@ -1,1 +1,0 @@
-Class R:_{foo(){New a(1).a();}}

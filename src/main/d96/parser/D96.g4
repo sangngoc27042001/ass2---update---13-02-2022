@@ -111,6 +111,7 @@ stmIf: IF LB expression RB statementInFunction (ELSEIF LB expression RB statemen
 stmBreak: BREAK SEMI;
 stmContinue: CONTINUE SEMI;
 stmReturn: RETURN expression? SEMI;
+
 stmMethodInvocation: exp_9 DOT ID LB listOfExpressions RB SEMI|exp_10 DOUBLE_COLON STATICID LB listOfExpressions RB SEMI|exp_8V2 DOT ID (LB listOfExpressions RB)  SEMI;
 exp_8V2: exp_8V2 DOT ID (LB listOfExpressions RB)? | exp_9;
 

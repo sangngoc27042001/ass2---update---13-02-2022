@@ -1,5 +1,0 @@
-
-        Class A:B{
-            Var $a:Array[Int,3] = Array(1,1,1);
-        }
-        
