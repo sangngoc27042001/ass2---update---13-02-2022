@@ -28,6 +28,7 @@ class ASTGeneration(D96Visitor):
         return ret
 
     def visitStmVariableDecl(self, ctx:D96Parser.StmVariableDeclContext):
+        a=ctx.getText()
         if ctx.VAR():
             kind, variable, varType, varInit=self.visit(ctx.list_att())
             a=zip(kind, variable, varInit)
@@ -351,12 +352,12 @@ class ASTGeneration(D96Visitor):
     def visitStmConstructorDecl(self, ctx:D96Parser.StmConstructorDeclContext):
         param = self.visit(ctx.parameterList())
         body = self.visit(ctx.stmBlockInFunction())
-        return [MethodDecl(Instance(),Id('''"Constructor"'''),param,body)]
+        return [MethodDecl(Instance(),Id('''Constructor'''),param,body)]
 
     def visitStmdDestructorDecl(self, ctx:D96Parser.StmdDestructorDeclContext):
         param = []
         body = self.visit(ctx.stmBlockInFunction())
-        return [MethodDecl(Instance(),Id('''"Destructor"'''),param,body)]
+        return [MethodDecl(Instance(),Id('''Destructor'''),param,body)]
 
     def visitStmIf(self, ctx:D96Parser.StmIfContext):
         if (len(ctx.statementInFunction())<=2 and ctx.ELSE()) or len(ctx.statementInFunction())==1:
@@ -421,12 +422,13 @@ class ASTGeneration(D96Visitor):
         expr1 = self.visit(ctx.expression(0))
         expr2 = self.visit(ctx.expression(1))
         loop = self.visit(ctx.stmBlockInFunction())
-        expr3 = self.visit(ctx.expression(2)) if ctx.BY() else None
+        expr3 = self.visit(ctx.expression(2)) if ctx.BY() else IntLiteral(1)
         return For(id, expr1, expr2, loop, expr3)
 ############################################
 ################ CODE Ở ĐÂY ################
 ############################################
     def visitLiteral(self, ctx:D96Parser.LiteralContext):
+        a=ctx.getText()
         if ctx.P_INTLIT():
             if ctx.getText()[0]=='0':
                 if ctx.getText()[1] in ['b','B']:
@@ -437,7 +439,6 @@ class ASTGeneration(D96Visitor):
                     return IntLiteral(int(ctx.P_INTLIT().getText(), 8))
             return IntLiteral(int(ctx.P_INTLIT().getText(), 10))
         elif ctx.INTLIT():
-            a=ctx.getText()
             if ctx.getText()[0] == '0' and len(ctx.getText())>1:
                 if ctx.getText()[1] in ['b', 'B']:
                     return IntLiteral(int(ctx.INTLIT().getText(), 2))
@@ -447,6 +448,9 @@ class ASTGeneration(D96Visitor):
                     return IntLiteral(int(ctx.INTLIT().getText(), 8))
             return IntLiteral(int(ctx.INTLIT().getText(), 10))
         elif ctx.FLOATLIT():
+            a=ctx.getText()
+            if ctx.getText()[:2] == '.e':
+                return FloatLiteral(float(0))
             return FloatLiteral(float(ctx.FLOATLIT().getText()))
         elif ctx.STRINGLIT():
             return StringLiteral(ctx.STRINGLIT().getText())

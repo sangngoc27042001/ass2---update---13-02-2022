@@ -505,7 +505,7 @@ class ASTGenSuite(unittest.TestCase):
         self.assertTrue(TestAST.test(line, expect, 352))
     def test_353_683_PN(self):
         line = """Class D{Var _9f1,_:l_;}Class m_:r_{Val $_:Int =---"\\t";Var _17_:Int ;}"""
-        expect = '''Program([ClassDecl(Id(D),[AttributeDecl(Instance,VarDecl(Id(_9f1),ClassType(Id(l_)))),AttributeDecl(Instance,VarDecl(Id(_),ClassType(Id(l_))))]),ClassDecl(Id(m_),Id(r_),[AttributeDecl(Static,ConstDecl(Id($_),IntType,UnaryOp(-,UnaryOp(-,UnaryOp(-,StringLit(\\t)))))),AttributeDecl(Instance,VarDecl(Id(_17_),IntType))])])'''
+        expect = '''Program([ClassDecl(Id(D),[AttributeDecl(Instance,VarDecl(Id(_9f1),ClassType(Id(l_)),NullLiteral())),AttributeDecl(Instance,VarDecl(Id(_),ClassType(Id(l_)),NullLiteral()))]),ClassDecl(Id(m_),Id(r_),[AttributeDecl(Static,ConstDecl(Id($_),IntType,UnaryOp(-,UnaryOp(-,UnaryOp(-,StringLit(\\t)))))),AttributeDecl(Instance,VarDecl(Id(_17_),IntType))])])'''
         self.assertTrue(TestAST.test(line, expect, 353))
     def test_354_905_PN(self):
         line = '''Class _{}Class l__:_k_6t{}Class W{Val T4:String =!!J_::$__;}'''
@@ -656,3 +656,13 @@ class ASTGenSuite(unittest.TestCase):
         }"""
         expect = "Program([ClassDecl(Id(Program),[MethodDecl(Id(a),Instance,[],Block([Call(FieldAccess(FieldAccess(Id(A),Id(a)),Id(a)),Id(foo),[]),Call(ArrayCell(FieldAccess(Id(a),Id(a)),[IntLit(1),IntLit(2),IntLit(3)]),Id(foo),[]),Call(FieldAccess(Id(MotorBike),Id($ab)),Id(foo),[]),Call(ArrayCell(FieldAccess(FieldAccess(Id(MotorBike),Id($a)),Id(a)),[IntLit(1),IntLit(2)]),Id(foo),[])]))])])"
         self.assertTrue(TestAST.test(input, expect, 570))
+
+    def test_371(self):
+        input = """Class D{
+            Var _9f1, $_: l_;
+            foo(){
+                Val a,b:I;
+            }
+        }"""
+        expect = "Program([ClassDecl(Id(D),[AttributeDecl(Instance,VarDecl(Id(_9f1),ClassType(Id(l_)),NullLiteral())),AttributeDecl(Static,VarDecl(Id($_),ClassType(Id(l_)),NullLiteral())),MethodDecl(Id(foo),Instance,[],Block([ConstDecl(Id(a),ClassType(Id(I)),NullLiteral()),ConstDecl(Id(b),ClassType(Id(I)),NullLiteral())]))])])"
+        self.assertTrue(TestAST.test(input, expect, 371))
