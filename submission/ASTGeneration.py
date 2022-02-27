@@ -43,6 +43,7 @@ class ASTGeneration(D96Visitor):
         return self.visit(ctx.list_att())
 
     def visitList_att(self, ctx:D96Parser.List_attContext):
+        a=ctx.getText()
         if ctx.list_att_term():
             variable=[Id(i.getText()) for i in ctx.getChildren() if i in (ctx.ID()+ctx.STATICID())]
             kind = [(Instance() if i in ctx.ID() else Static()) for i in ctx.getChildren() if i in (ctx.ID()+ctx.STATICID())]
@@ -56,6 +57,8 @@ class ASTGeneration(D96Visitor):
             variable = [Id(i.getText()) for i in ctx.getChildren() if i in (ctx.ID()+ctx.STATICID())]
             kind = [(Instance() if i in ctx.ID() else Static()) for i in ctx.getChildren() if i in (ctx.ID()+ctx.STATICID())]
             varInit=[None for _ in (ctx.ID()+ctx.STATICID())]
+            if isinstance(varType, ClassType):
+                varInit = [NullLiteral() for _ in (ctx.ID() + ctx.STATICID())]
             return kind, variable, varType, varInit
 
     def visitList_att_term(self, ctx:D96Parser.List_att_termContext):
@@ -315,6 +318,8 @@ class ASTGeneration(D96Visitor):
             variable = [Id(i.getText()) for i in ctx.ID()]
             kind = [(Instance() if i in ctx.ID() else Static()) for i in ctx.ID()]
             varInit = [None for _ in ctx.ID()]
+            if isinstance(varType, ClassType):
+                varInit = [NullLiteral() for _ in ctx.ID()]
             return kind, variable, varType, varInit
     def visitList_att_termInFunction(self, ctx:D96Parser.List_att_termInFunctionContext):
         if ctx.typeData():

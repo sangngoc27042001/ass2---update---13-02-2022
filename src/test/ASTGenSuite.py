@@ -636,15 +636,11 @@ class ASTGenSuite(unittest.TestCase):
     def test_369(self):
         input = """Class Program {
             main() {
-                (a[1]).func();
-                a[1] = 1;
-                Out.println(a.a[1]);
-                ((((a[1][2]).a[1]).func()[0]).a[1]).func();
-                Return;
+                a[1][exp::$b().c[exp::$b().c[exp::$b().c]]] = 1;
             }
         }"""
-        expect = "Program([ClassDecl(Id(Program),[MethodDecl(Id(main),Static,[],Block([Call(ArrayCell(Id(a),[IntLit(1)]),Id(func),[]),AssignStmt(ArrayCell(Id(a),[IntLit(1)]),IntLit(1)),Call(Id(Out),Id(println),[ArrayCell(FieldAccess(Id(a),Id(a)),[IntLit(1)])]),Call(ArrayCell(FieldAccess(ArrayCell(CallExpr(ArrayCell(FieldAccess(ArrayCell(Id(a),[IntLit(1),IntLit(2)]),Id(a)),[IntLit(1)]),Id(func),[]),[IntLit(0)]),Id(a)),[IntLit(1)]),Id(func),[]),Return()]))])])"
-        self.assertTrue(TestAST.test(input, expect, 368))
+        expect = "Program([ClassDecl(Id(Program),[MethodDecl(Id(main),Static,[],Block([AssignStmt(ArrayCell(Id(a),[IntLit(1),ArrayCell(FieldAccess(CallExpr(Id(exp),Id($b),[]),Id(c)),[ArrayCell(FieldAccess(CallExpr(Id(exp),Id($b),[]),Id(c)),[FieldAccess(CallExpr(Id(exp),Id($b),[]),Id(c))])])]),IntLit(1))]))])])"
+        self.assertTrue(TestAST.test(input, expect, 369))
     def test_370(self):
         input = """Class Program {
             a() {
@@ -655,14 +651,200 @@ class ASTGenSuite(unittest.TestCase):
             }
         }"""
         expect = "Program([ClassDecl(Id(Program),[MethodDecl(Id(a),Instance,[],Block([Call(FieldAccess(FieldAccess(Id(A),Id(a)),Id(a)),Id(foo),[]),Call(ArrayCell(FieldAccess(Id(a),Id(a)),[IntLit(1),IntLit(2),IntLit(3)]),Id(foo),[]),Call(FieldAccess(Id(MotorBike),Id($ab)),Id(foo),[]),Call(ArrayCell(FieldAccess(FieldAccess(Id(MotorBike),Id($a)),Id(a)),[IntLit(1),IntLit(2)]),Id(foo),[])]))])])"
-        self.assertTrue(TestAST.test(input, expect, 570))
+        self.assertTrue(TestAST.test(input, expect, 370))
 
     def test_371(self):
         input = """Class D{
             Var _9f1, $_: l_;
             foo(){
-                Val a,b:I;
+                Var a,b:I;
             }
         }"""
-        expect = "Program([ClassDecl(Id(D),[AttributeDecl(Instance,VarDecl(Id(_9f1),ClassType(Id(l_)),NullLiteral())),AttributeDecl(Static,VarDecl(Id($_),ClassType(Id(l_)),NullLiteral())),MethodDecl(Id(foo),Instance,[],Block([ConstDecl(Id(a),ClassType(Id(I)),NullLiteral()),ConstDecl(Id(b),ClassType(Id(I)),NullLiteral())]))])])"
+        expect = "Program([ClassDecl(Id(D),[AttributeDecl(Instance,VarDecl(Id(_9f1),ClassType(Id(l_)),NullLiteral())),AttributeDecl(Static,VarDecl(Id($_),ClassType(Id(l_)),NullLiteral())),MethodDecl(Id(foo),Instance,[],Block([VarDecl(Id(a),ClassType(Id(I)),NullLiteral()),VarDecl(Id(b),ClassType(Id(I)),NullLiteral())]))])])"
         self.assertTrue(TestAST.test(input, expect, 371))
+    def test_372(self):
+        input = """
+	Class NodeClass {
+		Var data : Int;
+		Val next : NodeClass;
+
+		Constructor(d : Int)
+		{
+			data = d;
+			next = Null;
+		}
+
+        ## Function to reverse the linked list ##
+        reverse(nodePoint : NodeClass)
+        {
+            Var prev : NodeClass = Null;
+            Val current : NodeClass = nodePoint;
+            Val next : NodeClass = Null;
+            Foreach (i In 1 .. forever By 1) {
+                If (current == Null) {
+                    Break;
+                } Else {
+                    next = current.next;
+                    current.next = prev;
+                    prev = current;
+                    current = next;
+                }
+            }
+            nodePoint = prev;
+            Return nodePoint;
+        }
+
+        printList(nodePoint : NodeClass)
+        {
+            Foreach (a In 1 .. infinity By 1) {
+                If (nodePoint != Null) {
+                    System.out.print(nodePoint.data +. " ");
+                    nodePoint = nodePoint.next;
+                } Else {
+                    Break;
+                }
+            }
+        }
+    }
+
+    Class Program {
+        mainA()
+        {
+            Val list : LinkedList = New LinkedList();
+            list.head = New NodeClass(85);
+            list.head.next = New NodeClass(15);
+            list.head.next.next = New NodeClass(4);
+            list.head.next.next.next = New NodeClass(20);
+
+            System.out.println("Given Linked list");
+            list.printList(head);
+            head = list.reverse(head);
+            System.out.println("");
+            System.out.println("Reversed linked list ");
+            list.printList(head);
+        }
+    }
+        """
+        expect = """Program([ClassDecl(Id(NodeClass),[AttributeDecl(Instance,VarDecl(Id(data),IntType)),AttributeDecl(Instance,ConstDecl(Id(next),ClassType(Id(NodeClass)),NullLiteral())),MethodDecl(Id(Constructor),Instance,[param(Id(d),IntType)],Block([AssignStmt(Id(data),Id(d)),AssignStmt(Id(next),NullLiteral())])),MethodDecl(Id(reverse),Instance,[param(Id(nodePoint),ClassType(Id(NodeClass)))],Block([VarDecl(Id(prev),ClassType(Id(NodeClass)),NullLiteral()),ConstDecl(Id(current),ClassType(Id(NodeClass)),Id(nodePoint)),ConstDecl(Id(next),ClassType(Id(NodeClass)),NullLiteral()),For(Id(i),IntLit(1),Id(forever),IntLit(1),Block([If(BinaryOp(==,Id(current),NullLiteral()),Block([Break]),Block([AssignStmt(Id(next),FieldAccess(Id(current),Id(next))),AssignStmt(FieldAccess(Id(current),Id(next)),Id(prev)),AssignStmt(Id(prev),Id(current)),AssignStmt(Id(current),Id(next))]))])]),AssignStmt(Id(nodePoint),Id(prev)),Return(Id(nodePoint))])),MethodDecl(Id(printList),Instance,[param(Id(nodePoint),ClassType(Id(NodeClass)))],Block([For(Id(a),IntLit(1),Id(infinity),IntLit(1),Block([If(BinaryOp(!=,Id(nodePoint),NullLiteral()),Block([Call(FieldAccess(Id(System),Id(out)),Id(print),[BinaryOp(+.,FieldAccess(Id(nodePoint),Id(data)),StringLit( ))]),AssignStmt(Id(nodePoint),FieldAccess(Id(nodePoint),Id(next)))]),Block([Break]))])])]))]),ClassDecl(Id(Program),[MethodDecl(Id(mainA),Instance,[],Block([ConstDecl(Id(list),ClassType(Id(LinkedList)),NewExpr(Id(LinkedList),[])),AssignStmt(FieldAccess(Id(list),Id(head)),NewExpr(Id(NodeClass),[IntLit(85)])),AssignStmt(FieldAccess(FieldAccess(Id(list),Id(head)),Id(next)),NewExpr(Id(NodeClass),[IntLit(15)])),AssignStmt(FieldAccess(FieldAccess(FieldAccess(Id(list),Id(head)),Id(next)),Id(next)),NewExpr(Id(NodeClass),[IntLit(4)])),AssignStmt(FieldAccess(FieldAccess(FieldAccess(FieldAccess(Id(list),Id(head)),Id(next)),Id(next)),Id(next)),NewExpr(Id(NodeClass),[IntLit(20)])),Call(FieldAccess(Id(System),Id(out)),Id(println),[StringLit(Given Linked list)]),Call(Id(list),Id(printList),[Id(head)]),AssignStmt(Id(head),CallExpr(Id(list),Id(reverse),[Id(head)])),Call(FieldAccess(Id(System),Id(out)),Id(println),[StringLit()]),Call(FieldAccess(Id(System),Id(out)),Id(println),[StringLit(Reversed linked list )]),Call(Id(list),Id(printList),[Id(head)])]))])])"""
+        self.assertTrue(TestAST.test(input, expect, 372))
+    def test_373(self):
+        input = """
+        Class Cak {
+            abcdeFu123(str: Array[String, 10]) {
+                Val parameters: Map = SomeClass::$parseParameters(args);
+
+                Val builder : ChainedOptionsBuilder = New OptionsBuilder()
+                .include(BigMatrixMultiplicationBenchmarking.class.getSimpleName())
+                .mode(Mode.AverageTime)
+                .forks(2)
+                .warmupIterations(10)
+                .measurementIterations(10)
+                .timeUnit(TimeUnit.SECONDS);
+
+                Return New Runner(builder.build()).run();
+            }
+    homemadeMatrixMultiplication(matrixProvider : BigMatrixProvider) {
+        Return HomemadeMatrix
+          .multiplyMatrices(matrixProvider.getFirstMatrix(), matrixProvider.getSecondMatrix());
+    }
+
+    nd4jMatrixMultiplication(matrixProvider : BigMatrixProvider) {
+        Val firstMatrix : INDArray = Nd4j.create(matrixProvider.getFirstMatrix());
+        Val secondMatrix : INDArray = Nd4j.create(matrixProvider.getSecondMatrix());
+
+        Return firstMatrix.mmul(secondMatrix);
+    }
+
+    coltMatrixMultiplication(matrixProvider : BigMatrixProvider) {
+        Val doubleFactory2D : DoubleFactory2D = DoubleFactory2D.dense;
+
+        Val firstMatrix : DoubleMatrix2D= doubleFactory2D.make(matrixProvider.getFirstMatrix());
+        Val secondMatrix : DoubleMatrix2D = doubleFactory2D.make(matrixProvider.getSecondMatrix());
+
+        Var algebra : Algebra = New Algebra();
+        Return algebra.mult(firstMatrix, secondMatrix);
+    }
+
+    ejmlMatrixMultiplication(matrixProvider : BigMatrixProvider) {
+        Var firstMatrix : SimpleMatrix = New SimpleMatrix(matrixProvider.getFirstMatrix());
+        Var secondMatrix : SimpleMatrix = New SimpleMatrix(matrixProvider.getSecondMatrix());
+
+        Return firstMatrix.mult(secondMatrix);
+    }
+
+    apacheCommonsMatrixMultiplication(matrixProvider : BigMatrixProvider) {
+        Var firstMatrix : RealMatrix = New Array2DRowRealMatrix(matrixProvider.getFirstMatrix());
+        Val secondMatrix : RealMatrix = New Array2DRowRealMatrix(matrixProvider.getSecondMatrix());
+
+        Return firstMatrix.multiply(secondMatrix);
+    }
+
+    la4jMatrixMultiplication(matrixProvider : BigMatrixProvider) {
+        Val firstMatrix : TheMatrix = New Basic2DMatrix(matrixProvider.getFirstMatrix());
+        Val secondMatrix : TheMatrix = New Basic2DMatrix(matrixProvider.getSecondMatrix());
+
+        Return firstMatrix.multiply(secondMatrix);
+    }
+        }
+        Class Program {
+            main() {
+                Val const1, const2: Int = 1 + 5, 2;
+                Var x, y : Int = 0, 0;
+                Val sth : Sth = New Sth();
+                Var a : Int = a.b.c.d();
+                Return;
+            }
+        }"""
+        expect = "Program([ClassDecl(Id(Cak),[MethodDecl(Id(abcdeFu123),Instance,[param(Id(str),ArrayType(10,StringType))],Block([ConstDecl(Id(parameters),ClassType(Id(Map)),CallExpr(Id(SomeClass),Id($parseParameters),[Id(args)])),ConstDecl(Id(builder),ClassType(Id(ChainedOptionsBuilder)),CallExpr(CallExpr(CallExpr(CallExpr(CallExpr(CallExpr(NewExpr(Id(OptionsBuilder),[]),Id(include),[CallExpr(FieldAccess(Id(BigMatrixMultiplicationBenchmarking),Id(class)),Id(getSimpleName),[])]),Id(mode),[FieldAccess(Id(Mode),Id(AverageTime))]),Id(forks),[IntLit(2)]),Id(warmupIterations),[IntLit(10)]),Id(measurementIterations),[IntLit(10)]),Id(timeUnit),[FieldAccess(Id(TimeUnit),Id(SECONDS))])),Return(CallExpr(NewExpr(Id(Runner),[CallExpr(Id(builder),Id(build),[])]),Id(run),[]))])),MethodDecl(Id(homemadeMatrixMultiplication),Instance,[param(Id(matrixProvider),ClassType(Id(BigMatrixProvider)))],Block([Return(CallExpr(Id(HomemadeMatrix),Id(multiplyMatrices),[CallExpr(Id(matrixProvider),Id(getFirstMatrix),[]),CallExpr(Id(matrixProvider),Id(getSecondMatrix),[])]))])),MethodDecl(Id(nd4jMatrixMultiplication),Instance,[param(Id(matrixProvider),ClassType(Id(BigMatrixProvider)))],Block([ConstDecl(Id(firstMatrix),ClassType(Id(INDArray)),CallExpr(Id(Nd4j),Id(create),[CallExpr(Id(matrixProvider),Id(getFirstMatrix),[])])),ConstDecl(Id(secondMatrix),ClassType(Id(INDArray)),CallExpr(Id(Nd4j),Id(create),[CallExpr(Id(matrixProvider),Id(getSecondMatrix),[])])),Return(CallExpr(Id(firstMatrix),Id(mmul),[Id(secondMatrix)]))])),MethodDecl(Id(coltMatrixMultiplication),Instance,[param(Id(matrixProvider),ClassType(Id(BigMatrixProvider)))],Block([ConstDecl(Id(doubleFactory2D),ClassType(Id(DoubleFactory2D)),FieldAccess(Id(DoubleFactory2D),Id(dense))),ConstDecl(Id(firstMatrix),ClassType(Id(DoubleMatrix2D)),CallExpr(Id(doubleFactory2D),Id(make),[CallExpr(Id(matrixProvider),Id(getFirstMatrix),[])])),ConstDecl(Id(secondMatrix),ClassType(Id(DoubleMatrix2D)),CallExpr(Id(doubleFactory2D),Id(make),[CallExpr(Id(matrixProvider),Id(getSecondMatrix),[])])),VarDecl(Id(algebra),ClassType(Id(Algebra)),NewExpr(Id(Algebra),[])),Return(CallExpr(Id(algebra),Id(mult),[Id(firstMatrix),Id(secondMatrix)]))])),MethodDecl(Id(ejmlMatrixMultiplication),Instance,[param(Id(matrixProvider),ClassType(Id(BigMatrixProvider)))],Block([VarDecl(Id(firstMatrix),ClassType(Id(SimpleMatrix)),NewExpr(Id(SimpleMatrix),[CallExpr(Id(matrixProvider),Id(getFirstMatrix),[])])),VarDecl(Id(secondMatrix),ClassType(Id(SimpleMatrix)),NewExpr(Id(SimpleMatrix),[CallExpr(Id(matrixProvider),Id(getSecondMatrix),[])])),Return(CallExpr(Id(firstMatrix),Id(mult),[Id(secondMatrix)]))])),MethodDecl(Id(apacheCommonsMatrixMultiplication),Instance,[param(Id(matrixProvider),ClassType(Id(BigMatrixProvider)))],Block([VarDecl(Id(firstMatrix),ClassType(Id(RealMatrix)),NewExpr(Id(Array2DRowRealMatrix),[CallExpr(Id(matrixProvider),Id(getFirstMatrix),[])])),ConstDecl(Id(secondMatrix),ClassType(Id(RealMatrix)),NewExpr(Id(Array2DRowRealMatrix),[CallExpr(Id(matrixProvider),Id(getSecondMatrix),[])])),Return(CallExpr(Id(firstMatrix),Id(multiply),[Id(secondMatrix)]))])),MethodDecl(Id(la4jMatrixMultiplication),Instance,[param(Id(matrixProvider),ClassType(Id(BigMatrixProvider)))],Block([ConstDecl(Id(firstMatrix),ClassType(Id(TheMatrix)),NewExpr(Id(Basic2DMatrix),[CallExpr(Id(matrixProvider),Id(getFirstMatrix),[])])),ConstDecl(Id(secondMatrix),ClassType(Id(TheMatrix)),NewExpr(Id(Basic2DMatrix),[CallExpr(Id(matrixProvider),Id(getSecondMatrix),[])])),Return(CallExpr(Id(firstMatrix),Id(multiply),[Id(secondMatrix)]))]))]),ClassDecl(Id(Program),[MethodDecl(Id(main),Static,[],Block([ConstDecl(Id(const1),IntType,BinaryOp(+,IntLit(1),IntLit(5))),ConstDecl(Id(const2),IntType,IntLit(2)),VarDecl(Id(x),IntType,IntLit(0)),VarDecl(Id(y),IntType,IntLit(0)),ConstDecl(Id(sth),ClassType(Id(Sth)),NewExpr(Id(Sth),[])),VarDecl(Id(a),IntType,CallExpr(FieldAccess(FieldAccess(Id(a),Id(b)),Id(c)),Id(d),[])),Return()]))])])"
+        self.assertTrue(TestAST.test(input, expect, 373))
+    def test_374(self):
+        input = """
+        Class Map {
+            Val bean: Array[String, 10];
+            Val value: Array[String, 10];
+            Constructor(bean: Array[String, 10]; value: Array[String, 10]) {
+                Self.bean = bean;
+                Self.value = value;
+                Return;
+            }
+            Destructor() {
+                Self.clean(Self.bean);
+                Self.clean(Self.value);
+                Return;
+            }
+            clean() {
+                Out.println("Cleaning");
+                Foreach (k In 0 .. Self.bean.length() By 1)
+                {
+                    el = Self.bean[k];
+
+                    Self.free(el);
+                    Self.bean = Null;
+                }
+                Self.free(bean);
+                Self.bean = Null;
+                Foreach (v In 0 .. Self.value.length() By 1)
+                {
+                    el = Self.value.a[v];
+
+                    Self.free(el);
+                    Self.value = Null;
+                }
+                Self.free(value);
+                Self.value = Null;
+                Val a : Boolean = True;
+                Val b : Int = 1;
+                Return (True || False) && (a == b);
+            }
+        }
+        Class Program {
+            mainA() {
+                Val const1, const2: Int = 1 + 5, 2;
+                Var x, y : Int = 0, 0;
+                Val sth : Sth = New Sth();
+                Return;
+            }
+        }
+        """
+        expect = "Program([ClassDecl(Id(Map),[AttributeDecl(Instance,ConstDecl(Id(bean),ArrayType(10,StringType),None)),AttributeDecl(Instance,ConstDecl(Id(value),ArrayType(10,StringType),None)),MethodDecl(Id(Constructor),Instance,[param(Id(bean),ArrayType(10,StringType)),param(Id(value),ArrayType(10,StringType))],Block([AssignStmt(FieldAccess(Self(),Id(bean)),Id(bean)),AssignStmt(FieldAccess(Self(),Id(value)),Id(value)),Return()])),MethodDecl(Id(Destructor),Instance,[],Block([Call(Self(),Id(clean),[FieldAccess(Self(),Id(bean))]),Call(Self(),Id(clean),[FieldAccess(Self(),Id(value))]),Return()])),MethodDecl(Id(clean),Instance,[],Block([Call(Id(Out),Id(println),[StringLit(Cleaning)]),For(Id(k),IntLit(0),CallExpr(FieldAccess(Self(),Id(bean)),Id(length),[]),IntLit(1),Block([AssignStmt(Id(el),ArrayCell(FieldAccess(Self(),Id(bean)),[Id(k)])),Call(Self(),Id(free),[Id(el)]),AssignStmt(FieldAccess(Self(),Id(bean)),NullLiteral())])]),Call(Self(),Id(free),[Id(bean)]),AssignStmt(FieldAccess(Self(),Id(bean)),NullLiteral()),For(Id(v),IntLit(0),CallExpr(FieldAccess(Self(),Id(value)),Id(length),[]),IntLit(1),Block([AssignStmt(Id(el),ArrayCell(FieldAccess(FieldAccess(Self(),Id(value)),Id(a)),[Id(v)])),Call(Self(),Id(free),[Id(el)]),AssignStmt(FieldAccess(Self(),Id(value)),NullLiteral())])]),Call(Self(),Id(free),[Id(value)]),AssignStmt(FieldAccess(Self(),Id(value)),NullLiteral()),ConstDecl(Id(a),BoolType,BooleanLit(True)),ConstDecl(Id(b),IntType,IntLit(1)),Return(BinaryOp(&&,BinaryOp(||,BooleanLit(True),BooleanLit(False)),BinaryOp(==,Id(a),Id(b))))]))]),ClassDecl(Id(Program),[MethodDecl(Id(mainA),Instance,[],Block([ConstDecl(Id(const1),IntType,BinaryOp(+,IntLit(1),IntLit(5))),ConstDecl(Id(const2),IntType,IntLit(2)),VarDecl(Id(x),IntType,IntLit(0)),VarDecl(Id(y),IntType,IntLit(0)),ConstDecl(Id(sth),ClassType(Id(Sth)),NewExpr(Id(Sth),[])),Return()]))])])"
+        self.assertTrue(TestAST.test(input, expect, 374))

@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(R),Id(_),[MethodDecl(Id(foo),Instance,[],Block([Call(NewExpr(Id(a),[IntLit(1)]),Id(a),[])]))])])

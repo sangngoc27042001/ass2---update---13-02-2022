@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(_),Id(qc0R),[]),ClassDecl(Id(E),[AttributeDecl(Instance,VarDecl(Id(_),ClassType(Id(E)),UnaryOp(-,FieldAccess(FieldAccess(CallExpr(FieldAccess(FieldAccess(FieldAccess(NewExpr(Id(_),[]),Id(kD9)),Id(p)),Id(F)),Id(d),[]),Id(k)),Id(h6e71_)))))])])

@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(_),[]),ClassDecl(Id(l__),Id(_k_6t),[]),ClassDecl(Id(W),[AttributeDecl(Instance,ConstDecl(Id(T4),StringType,UnaryOp(!,UnaryOp(!,FieldAccess(Id(J_),Id($__))))))])])

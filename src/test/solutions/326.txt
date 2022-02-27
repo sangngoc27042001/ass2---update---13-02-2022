@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(A),[MethodDecl(Id($foo),Static,[],Block([AssignStmt(ArrayCell(Id(a),[IntLit(1),BinaryOp(+,IntLit(3),IntLit(4))]),IntLit(1))]))])])

@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(Program),[MethodDecl(Id(main),Static,[],Block([])),MethodDecl(Id(main),Instance,[param(Id(a),IntType),param(Id(b),IntType),param(Id(c),IntType)],Block([]))]),ClassDecl(Id(DelPhaiProgram),[MethodDecl(Id(main),Instance,[],Block([]))])])

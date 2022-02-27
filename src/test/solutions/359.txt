@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(R),Id(_),[]),ClassDecl(Id(_8_),Id(_B),[]),ClassDecl(Id(_),Id(_4),[AttributeDecl(Static,VarDecl(Id($b),ArrayType(1,StringType),UnaryOp(!,UnaryOp(-,Self()))))])])

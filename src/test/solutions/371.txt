@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(D),[AttributeDecl(Instance,VarDecl(Id(_9f1),ClassType(Id(l_)),NullLiteral())),AttributeDecl(Static,VarDecl(Id($_),ClassType(Id(l_)),NullLiteral())),MethodDecl(Id(foo),Instance,[],Block([VarDecl(Id(a),ClassType(Id(I)),NullLiteral()),VarDecl(Id(b),ClassType(Id(I)),NullLiteral())]))])])

@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(A),Id(B),[MethodDecl(Id(foo),Instance,[],Block([Return(CallExpr(Self(),Id(foo),[]))])),MethodDecl(Id(Constructor),Instance,[param(Id(a),ClassType(Id(J))),param(Id(b),ClassType(Id(J)))],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([]))])])

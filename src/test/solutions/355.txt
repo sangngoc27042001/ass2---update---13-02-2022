@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(_),Id(x4_),[AttributeDecl(Instance,ConstDecl(Id(_GO),ClassType(Id(k)),BinaryOp(<=,UnaryOp(!,CallExpr(Id(__),Id(F),[])),BinaryOp(+,FieldAccess(FieldAccess(FieldAccess(CallExpr(FieldAccess(Id(yYF9),Id($7)),Id(_),[]),Id(_A_N)),Id(_)),Id(L7K)),UnaryOp(!,CallExpr(Id(tW0),Id($iw_9),[]))))))])])
