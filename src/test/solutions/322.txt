@@ -1,1 +1,0 @@
-Program([ClassDecl(Id(A),[MethodDecl(Id(foo),Instance,[],Block([VarDecl(Id(a),IntType,IntLit(1)),VarDecl(Id(b),FloatType,FloatLit(1.0)),ConstDecl(Id(c),BoolType,BooleanLit(True))]))])])

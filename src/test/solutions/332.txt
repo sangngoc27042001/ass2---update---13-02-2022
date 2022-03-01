@@ -1,1 +1,0 @@
-Program([ClassDecl(Id(A),[MethodDecl(Id(foo),Instance,[],Block([Break,Continue,Return(BinaryOp(==.,Id(a),UnaryOp(!,Id(b)))),Block([])]))])])

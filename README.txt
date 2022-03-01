@@ -1,11 +1,1 @@
-Set environment variable ANTLR_JAR to the file antlr-4.9.2-complete.jar in your computer
-Change current directory to initial/src where there is file run.py
-Type: python run.py gen 
-Then type: python run.py test LexerSuite
-Then type: python run.py test ParserSuite
-Then type: python run.py test ASTGenSuite
-Then type: python run.py test CheckerSuite
-Then type: python run.py test CodeGenSuite
-
-
-
+Program([VarDecl("b",IntType()),FuncDecl("a",[VarDecl("m",FloatType()),VarDecl("b",IntType()),VarDecl("d",FloatType())],([ConstDecl("c",IntLit(3)),FuncDecl("foo",[VarDecl("x",IntType())],([VarDecl("y",IntType()),VarDecl("z",IntType())],[Id("y"),Id("x"),Id("foo"),Id("c"),Id("m"),Id("a")]))],[Id("foo"),Id("d"),Id("z")]))])

@@ -848,3 +848,407 @@ class ASTGenSuite(unittest.TestCase):
         """
         expect = "Program([ClassDecl(Id(Map),[AttributeDecl(Instance,ConstDecl(Id(bean),ArrayType(10,StringType),None)),AttributeDecl(Instance,ConstDecl(Id(value),ArrayType(10,StringType),None)),MethodDecl(Id(Constructor),Instance,[param(Id(bean),ArrayType(10,StringType)),param(Id(value),ArrayType(10,StringType))],Block([AssignStmt(FieldAccess(Self(),Id(bean)),Id(bean)),AssignStmt(FieldAccess(Self(),Id(value)),Id(value)),Return()])),MethodDecl(Id(Destructor),Instance,[],Block([Call(Self(),Id(clean),[FieldAccess(Self(),Id(bean))]),Call(Self(),Id(clean),[FieldAccess(Self(),Id(value))]),Return()])),MethodDecl(Id(clean),Instance,[],Block([Call(Id(Out),Id(println),[StringLit(Cleaning)]),For(Id(k),IntLit(0),CallExpr(FieldAccess(Self(),Id(bean)),Id(length),[]),IntLit(1),Block([AssignStmt(Id(el),ArrayCell(FieldAccess(Self(),Id(bean)),[Id(k)])),Call(Self(),Id(free),[Id(el)]),AssignStmt(FieldAccess(Self(),Id(bean)),NullLiteral())])]),Call(Self(),Id(free),[Id(bean)]),AssignStmt(FieldAccess(Self(),Id(bean)),NullLiteral()),For(Id(v),IntLit(0),CallExpr(FieldAccess(Self(),Id(value)),Id(length),[]),IntLit(1),Block([AssignStmt(Id(el),ArrayCell(FieldAccess(FieldAccess(Self(),Id(value)),Id(a)),[Id(v)])),Call(Self(),Id(free),[Id(el)]),AssignStmt(FieldAccess(Self(),Id(value)),NullLiteral())])]),Call(Self(),Id(free),[Id(value)]),AssignStmt(FieldAccess(Self(),Id(value)),NullLiteral()),ConstDecl(Id(a),BoolType,BooleanLit(True)),ConstDecl(Id(b),IntType,IntLit(1)),Return(BinaryOp(&&,BinaryOp(||,BooleanLit(True),BooleanLit(False)),BinaryOp(==,Id(a),Id(b))))]))]),ClassDecl(Id(Program),[MethodDecl(Id(mainA),Instance,[],Block([ConstDecl(Id(const1),IntType,BinaryOp(+,IntLit(1),IntLit(5))),ConstDecl(Id(const2),IntType,IntLit(2)),VarDecl(Id(x),IntType,IntLit(0)),VarDecl(Id(y),IntType,IntLit(0)),ConstDecl(Id(sth),ClassType(Id(Sth)),NewExpr(Id(Sth),[])),Return()]))])])"
         self.assertTrue(TestAST.test(input, expect, 374))
+    def test_375(self):
+        input = '''
+        Class Mine:Arr{
+            func(){
+                Var a: Array[Float, 01];
+                Var a: Array[Float, 0x1];
+                Var a: Array[Float, 0X1];
+                Var a: Array[Float, 0b1];
+                Var a: Array[Float, 0B1];
+                Var a: Array[Float, 1];
+            }
+        }
+        '''
+        expect = 'Program([ClassDecl(Id(Mine),Id(Arr),[MethodDecl(Id(func),Instance,[],Block([VarDecl(Id(a),ArrayType(1,FloatType)),VarDecl(Id(a),ArrayType(1,FloatType)),VarDecl(Id(a),ArrayType(1,FloatType)),VarDecl(Id(a),ArrayType(1,FloatType)),VarDecl(Id(a),ArrayType(1,FloatType)),VarDecl(Id(a),ArrayType(1,FloatType))]))])])'
+        self.assertTrue(TestAST.test(input, expect, 375))
+
+    def test_376(self):
+        input = '''
+        Class Mine:Arr{
+            func(){
+                Var a: Array[Int, 1] = 1_23.456e+7990;
+            }
+        }
+        '''
+        expect = 'Program([ClassDecl(Id(Mine),Id(Arr),[MethodDecl(Id(func),Instance,[],Block([VarDecl(Id(a),ArrayType(1,IntType),FloatLit(inf))]))])])'
+        self.assertTrue(TestAST.test(input, expect, 376))
+
+    def test_377(self):
+        input = '''
+        Class Program{
+            main(){
+                Return Arr[1][2][3][3+1][4];
+            }
+        }
+        '''
+        expect = 'Program([ClassDecl(Id(Program),[MethodDecl(Id(main),Static,[],Block([Return(ArrayCell(Id(Arr),[IntLit(1),IntLit(2),IntLit(3),BinaryOp(+,IntLit(3),IntLit(1)),IntLit(4)]))]))])])'
+        self.assertTrue(TestAST.test(input, expect, 377))
+
+    def test_378(self):
+        input = '''
+        Class Program {
+            main() {
+                (abc[123]).funct();
+                a[123] = "1";
+                Out.println(f.a[1]);
+                ((((efh[32][1]).a[21]).funct()[0]).a[21]).funct();
+                Return;
+            }
+        }
+        '''
+        expect = 'Program([ClassDecl(Id(Program),[MethodDecl(Id(main),Static,[],Block([Call(ArrayCell(Id(abc),[IntLit(123)]),Id(funct),[]),AssignStmt(ArrayCell(Id(a),[IntLit(123)]),StringLit(1)),Call(Id(Out),Id(println),[ArrayCell(FieldAccess(Id(f),Id(a)),[IntLit(1)])]),Call(ArrayCell(FieldAccess(ArrayCell(CallExpr(ArrayCell(FieldAccess(ArrayCell(Id(efh),[IntLit(32),IntLit(1)]),Id(a)),[IntLit(21)]),Id(funct),[]),[IntLit(0)]),Id(a)),[IntLit(21)]),Id(funct),[]),Return()]))])])'
+        self.assertTrue(TestAST.test(input, expect, 378))
+
+    def test_379(self):
+        input = '''
+        Class Shape{
+            func_tion(){
+                Return A::$B * C::$DD--F::$H;
+            }
+        }
+        '''
+        expect = 'Program([ClassDecl(Id(Shape),[MethodDecl(Id(func_tion),Instance,[],Block([Return(BinaryOp(-,BinaryOp(*,FieldAccess(Id(A),Id($B)),FieldAccess(Id(C),Id($DD))),UnaryOp(-,FieldAccess(Id(F),Id($H)))))]))])])'
+        self.assertTrue(TestAST.test(input, expect, 379))
+
+    def test_380(self):
+        input = '''
+        Class Shape{
+            func_tion(){
+                Foreach (Step In 1+1 .. 100+100 By D.func_tion()){}
+            }
+        }
+        '''
+        expect = 'Program([ClassDecl(Id(Shape),[MethodDecl(Id(func_tion),Instance,[],Block([For(Id(Step),BinaryOp(+,IntLit(1),IntLit(1)),BinaryOp(+,IntLit(100),IntLit(100)),CallExpr(Id(D),Id(func_tion),[]),Block([])])]))])])'
+        self.assertTrue(TestAST.test(input, expect, 380))
+
+    def test_381(self):
+        input = '''
+        Class Shape{
+            func_tion(){
+               A[b[c[d[e[f::$g]]]]][h::$i][j.k()][F::$DDD()]=0;
+            }
+        }   
+        '''
+        expect = 'Program([ClassDecl(Id(Shape),[MethodDecl(Id(func_tion),Instance,[],Block([AssignStmt(ArrayCell(Id(A),[ArrayCell(Id(b),[ArrayCell(Id(c),[ArrayCell(Id(d),[ArrayCell(Id(e),[FieldAccess(Id(f),Id($g))])])])]),FieldAccess(Id(h),Id($i)),CallExpr(Id(j),Id(k),[]),CallExpr(Id(F),Id($DDD),[])]),IntLit(0))]))])])'
+        self.assertTrue(TestAST.test(input, expect, 381))
+
+    def test_382(self):
+        input = '''
+        Class Shape{
+            func_tion(){
+                If (a == -1--1){
+                    If(b == "c"+."c"){}
+                    Elseif(SHAPE == b ==. c){}
+                }
+            }
+        }   
+        '''
+        expect = 'Program([ClassDecl(Id(Shape),[MethodDecl(Id(func_tion),Instance,[],Block([If(BinaryOp(==,Id(a),BinaryOp(-,UnaryOp(-,IntLit(1)),UnaryOp(-,IntLit(1)))),Block([If(BinaryOp(+.,BinaryOp(==,Id(b),StringLit(c)),StringLit(c)),Block([]),If(BinaryOp(==.,BinaryOp(==,Id(SHAPE),Id(b)),Id(c)),Block([])))]))]))])])'
+        self.assertTrue(TestAST.test(input, expect, 382))
+
+    def test_383(self):
+        input = '''
+        Class Shape{
+            $a(){
+                Break;
+                Continue;
+                Return;
+            }
+        }
+        '''
+        expect = 'Program([ClassDecl(Id(Shape),[MethodDecl(Id($a),Static,[],Block([Break,Continue,Return()]))])])'
+        self.assertTrue(TestAST.test(input, expect, 383))
+
+    def test_384(self):
+        input = '''
+        Class Shape{
+            $a(){
+                Break;
+                Continue;
+                Return;
+            }
+        }
+        '''
+        expect = 'Program([ClassDecl(Id(Shape),[MethodDecl(Id($a),Static,[],Block([Break,Continue,Return()]))])])'
+        self.assertTrue(TestAST.test(input, expect, 384))
+
+    def test_385(self):
+        input = '''
+        Class League_of_Legend{
+           Destructor(){
+            Status = 0x123;
+            Return;
+            Run::$Client.start();
+            } 
+        }
+
+        Class Master:Rank{}
+        '''
+        expect = 'Program([ClassDecl(Id(League_of_Legend),[MethodDecl(Id(Destructor),Instance,[],Block([AssignStmt(Id(Status),IntLit(291)),Return(),Call(FieldAccess(Id(Run),Id($Client)),Id(start),[])]))]),ClassDecl(Id(Master),Id(Rank),[])])'
+        self.assertTrue(TestAST.test(input, expect, 385))
+    def test_386(self):
+        input = """
+        Class ElectricalDevice{
+                Var weight: Float;
+                Var useBattery: Boolean;
+                Constructor(){}
+                Constructor(weight: Float; useBat:Boolean){
+                    Self.weight = weight/100;
+                    Self.useBattery = useBat;
+                }
+            }
+            Class DellLap:Electrical{
+                start(){
+                    DellLap::$nothing();
+                    Return useBattery;
+                }
+                stop(){
+                    Self.nothing();
+                    Return -useBattery;
+                }
+            }
+        """
+        expect = "Program([ClassDecl(Id(ElectricalDevice),[AttributeDecl(Instance,VarDecl(Id(weight),FloatType)),AttributeDecl(Instance,VarDecl(Id(useBattery),BoolType)),MethodDecl(Id(Constructor),Instance,[],Block([])),MethodDecl(Id(Constructor),Instance,[param(Id(weight),FloatType),param(Id(useBat),BoolType)],Block([AssignStmt(FieldAccess(Self(),Id(weight)),BinaryOp(/,Id(weight),IntLit(100))),AssignStmt(FieldAccess(Self(),Id(useBattery)),Id(useBat))]))]),ClassDecl(Id(DellLap),Id(Electrical),[MethodDecl(Id(start),Instance,[],Block([Call(Id(DellLap),Id($nothing),[]),Return(Id(useBattery))])),MethodDecl(Id(stop),Instance,[],Block([Call(Self(),Id(nothing),[]),Return(UnaryOp(-,Id(useBattery)))]))])])"
+        self.assertTrue(TestAST.test(input, expect, 386))
+
+    def test_387(self):
+        input = """
+        Class ElectricalDevice{
+                Var weight: Float;
+                Var useBattery: Boolean;
+                Var $numOfDevices: Int;
+                Var $devices: Array[Float, 100];
+                Constructor(){}
+                Constructor(weight: Float; useBat:Boolean){
+                    Self.weight = weight/100;
+                    Self.useBattery = useBat;
+                    ElectricalDevice::$devices[ElectricalDevice::$numOfDevices] = Self;
+                    ElectricalDevice::$numOfDevices = ElectricalDevice::$numOfDevices+1;
+                }
+                Destructor(){}
+
+            }
+        """
+        expect = "Program([ClassDecl(Id(ElectricalDevice),[AttributeDecl(Instance,VarDecl(Id(weight),FloatType)),AttributeDecl(Instance,VarDecl(Id(useBattery),BoolType)),AttributeDecl(Static,VarDecl(Id($numOfDevices),IntType)),AttributeDecl(Static,VarDecl(Id($devices),ArrayType(100,FloatType))),MethodDecl(Id(Constructor),Instance,[],Block([])),MethodDecl(Id(Constructor),Instance,[param(Id(weight),FloatType),param(Id(useBat),BoolType)],Block([AssignStmt(FieldAccess(Self(),Id(weight)),BinaryOp(/,Id(weight),IntLit(100))),AssignStmt(FieldAccess(Self(),Id(useBattery)),Id(useBat)),AssignStmt(ArrayCell(FieldAccess(Id(ElectricalDevice),Id($devices)),[FieldAccess(Id(ElectricalDevice),Id($numOfDevices))]),Self()),AssignStmt(FieldAccess(Id(ElectricalDevice),Id($numOfDevices)),BinaryOp(+,FieldAccess(Id(ElectricalDevice),Id($numOfDevices)),IntLit(1)))])),MethodDecl(Id(Destructor),Instance,[],Block([]))])])"
+        self.assertTrue(TestAST.test(input, expect, 387))
+
+    def test_388(self):
+        input = """
+        Class DellLap:Electrical{
+
+                $Refresh(){
+                    Foreach(i In ElectricalDevice::$numOfDevices .. 0 By -1){
+
+                    }
+                }
+                start(){
+                    DellLap::$nothing();
+                    Return useBattery;
+                }
+                stop(){
+                    Self.nothing();
+                    Return -useBattery;
+                }
+            }
+        """
+        expect = "Program([ClassDecl(Id(DellLap),Id(Electrical),[MethodDecl(Id($Refresh),Static,[],Block([For(Id(i),FieldAccess(Id(ElectricalDevice),Id($numOfDevices)),IntLit(0),UnaryOp(-,IntLit(1)),Block([])])])),MethodDecl(Id(start),Instance,[],Block([Call(Id(DellLap),Id($nothing),[]),Return(Id(useBattery))])),MethodDecl(Id(stop),Instance,[],Block([Call(Self(),Id(nothing),[]),Return(UnaryOp(-,Id(useBattery)))]))])])"
+        self.assertTrue(TestAST.test(input, expect, 388))
+
+    def test_389(self):
+        input = """
+        Class DellLap:Electrical{
+                Var $NoDellLap: Int;
+                Var $laptops: Array[Boolean, 100];
+
+                $Refresh(){
+                    Foreach(i In (ElectricalDevice::$numOfDevices*100)/100 + 1 .. 100-100+35%34 By -1){
+                        (laptops[i]).refresh();
+                    }
+                }
+                start(){
+                    DellLap::$nothing();
+                    Return useBattery;
+                }
+                stop(){
+                    Self.nothing();
+                    Return -useBattery;
+                }
+        }
+        """
+        expect = "Program([ClassDecl(Id(DellLap),Id(Electrical),[AttributeDecl(Static,VarDecl(Id($NoDellLap),IntType)),AttributeDecl(Static,VarDecl(Id($laptops),ArrayType(100,BoolType))),MethodDecl(Id($Refresh),Static,[],Block([For(Id(i),BinaryOp(+,BinaryOp(/,BinaryOp(*,FieldAccess(Id(ElectricalDevice),Id($numOfDevices)),IntLit(100)),IntLit(100)),IntLit(1)),BinaryOp(+,BinaryOp(-,IntLit(100),IntLit(100)),BinaryOp(%,IntLit(35),IntLit(34))),UnaryOp(-,IntLit(1)),Block([Call(ArrayCell(Id(laptops),[Id(i)]),Id(refresh),[])])])])),MethodDecl(Id(start),Instance,[],Block([Call(Id(DellLap),Id($nothing),[]),Return(Id(useBattery))])),MethodDecl(Id(stop),Instance,[],Block([Call(Self(),Id(nothing),[]),Return(UnaryOp(-,Id(useBattery)))]))])])"
+        self.assertTrue(TestAST.test(input, expect, 389))
+
+    def test_390(self):
+        input = """
+        Class DellLap:Electrical{
+                Var $NoDellLap: Int;
+                Var $laptops: Array[Boolean, 100];
+
+                Constructor(weight: Float; useBat:Boolean){
+                    Self.weight = weight/100;
+                    Self.useBattery = useBat;
+                    ElectricalDevice::$devices[ElectricalDevice::$numOfDevices] = Self;
+                    DellLap::$laptops[ElectricalDevice::$numOfDevices] = Self;
+                    ElectricalDevice::$numOfDevices = ElectricalDevice::$numOfDevices+1;
+                }
+        }
+        """
+        expect = "Program([ClassDecl(Id(DellLap),Id(Electrical),[AttributeDecl(Static,VarDecl(Id($NoDellLap),IntType)),AttributeDecl(Static,VarDecl(Id($laptops),ArrayType(100,BoolType))),MethodDecl(Id(Constructor),Instance,[param(Id(weight),FloatType),param(Id(useBat),BoolType)],Block([AssignStmt(FieldAccess(Self(),Id(weight)),BinaryOp(/,Id(weight),IntLit(100))),AssignStmt(FieldAccess(Self(),Id(useBattery)),Id(useBat)),AssignStmt(ArrayCell(FieldAccess(Id(ElectricalDevice),Id($devices)),[FieldAccess(Id(ElectricalDevice),Id($numOfDevices))]),Self()),AssignStmt(ArrayCell(FieldAccess(Id(DellLap),Id($laptops)),[FieldAccess(Id(ElectricalDevice),Id($numOfDevices))]),Self()),AssignStmt(FieldAccess(Id(ElectricalDevice),Id($numOfDevices)),BinaryOp(+,FieldAccess(Id(ElectricalDevice),Id($numOfDevices)),IntLit(1)))]))])])"
+        self.assertTrue(TestAST.test(input, expect, 390))
+
+    def test_391(self):
+        input = """
+        Class DellLap:Electrical{
+                Var $NoDellLap: Int;
+                Var $laptops: Array[Boolean, 100];
+
+                start(){
+                    DellLap::$nothing();
+                    Return useBattery;
+                }
+                stop(){
+                    Self.nothing();
+                    Return -useBattery;
+                }
+        }
+        """
+        expect = "Program([ClassDecl(Id(DellLap),Id(Electrical),[AttributeDecl(Static,VarDecl(Id($NoDellLap),IntType)),AttributeDecl(Static,VarDecl(Id($laptops),ArrayType(100,BoolType))),MethodDecl(Id(start),Instance,[],Block([Call(Id(DellLap),Id($nothing),[]),Return(Id(useBattery))])),MethodDecl(Id(stop),Instance,[],Block([Call(Self(),Id(nothing),[]),Return(UnaryOp(-,Id(useBattery)))]))])])"
+        self.assertTrue(TestAST.test(input, expect, 391))
+
+    def test_392(self):
+        input = """
+        Class DellLap:Electrical{
+                Var $NoDellLap: Int;
+                Var $laptops: Array[Boolean, 100];
+
+                $checkVirus(){
+                    Foreach(i In DellLap::$NoDellLap/100*100 + 1 .. 100-100+35%34 By -1){
+                        If ((laptops[i]).checked == True){
+                            Continue;
+                        }
+                        Else{
+                            (laptops[i]).checked = True;
+                        }
+                    }
+                }
+        }
+        """
+        expect = "Program([ClassDecl(Id(DellLap),Id(Electrical),[AttributeDecl(Static,VarDecl(Id($NoDellLap),IntType)),AttributeDecl(Static,VarDecl(Id($laptops),ArrayType(100,BoolType))),MethodDecl(Id($checkVirus),Static,[],Block([For(Id(i),BinaryOp(+,BinaryOp(*,BinaryOp(/,FieldAccess(Id(DellLap),Id($NoDellLap)),IntLit(100)),IntLit(100)),IntLit(1)),BinaryOp(+,BinaryOp(-,IntLit(100),IntLit(100)),BinaryOp(%,IntLit(35),IntLit(34))),UnaryOp(-,IntLit(1)),Block([If(BinaryOp(==,FieldAccess(ArrayCell(Id(laptops),[Id(i)]),Id(checked)),BooleanLit(True)),Block([Continue]),Block([AssignStmt(FieldAccess(ArrayCell(Id(laptops),[Id(i)]),Id(checked)),BooleanLit(True))]))])])]))])])"
+        self.assertTrue(TestAST.test(input, expect, 392))
+
+    def test_393(self):
+        input = """
+        Class iPhone:ElectricalDevice{
+                Val $os: String = "iOS";
+                Var number: String; 
+                Var $numOfPhones: Int;
+                Var $phone: Array[Boolean, 100];
+
+                Constructor(){
+
+                }
+                Destructor(){
+
+                }
+            }
+        """
+        expect = "Program([ClassDecl(Id(iPhone),Id(ElectricalDevice),[AttributeDecl(Static,ConstDecl(Id($os),StringType,StringLit(iOS))),AttributeDecl(Instance,VarDecl(Id(number),StringType)),AttributeDecl(Static,VarDecl(Id($numOfPhones),IntType)),AttributeDecl(Static,VarDecl(Id($phone),ArrayType(100,BoolType))),MethodDecl(Id(Constructor),Instance,[],Block([])),MethodDecl(Id(Destructor),Instance,[],Block([]))])])"
+        self.assertTrue(TestAST.test(input, expect, 393))
+
+    def test_394(self):
+        input = """
+        Class iPhone:ElectricalDevice{
+                Val $os: String = "iOS";
+                Var number: String; 
+                Var $numOfPhones: Int;
+                Var $phone: Array[Boolean, 100];
+
+                insertSIM(sim: SIM){
+                    Self.number = SIM.number;
+                }
+
+                detachSIM(){
+                    Self.number = Null;
+                }
+            }
+        """
+        expect = "Program([ClassDecl(Id(iPhone),Id(ElectricalDevice),[AttributeDecl(Static,ConstDecl(Id($os),StringType,StringLit(iOS))),AttributeDecl(Instance,VarDecl(Id(number),StringType)),AttributeDecl(Static,VarDecl(Id($numOfPhones),IntType)),AttributeDecl(Static,VarDecl(Id($phone),ArrayType(100,BoolType))),MethodDecl(Id(insertSIM),Instance,[param(Id(sim),ClassType(Id(SIM)))],Block([AssignStmt(FieldAccess(Self(),Id(number)),FieldAccess(Id(SIM),Id(number)))])),MethodDecl(Id(detachSIM),Instance,[],Block([AssignStmt(FieldAccess(Self(),Id(number)),NullLiteral())]))])])"
+        self.assertTrue(TestAST.test(input, expect, 394))
+
+    def test_395(self):
+        input = """
+        Class RommSSaaa{
+                Var $NoStu : Int = 0;
+                Var $studentList: Array[String, 40];
+                addStudent(newStu: Student){
+                     RommSSaaa::$studentList[RommSSaaa::$NoStu] = newStu;
+                } 
+            }
+            Class Student{}
+        """
+        expect = "Program([ClassDecl(Id(RommSSaaa),[AttributeDecl(Static,VarDecl(Id($NoStu),IntType,IntLit(0))),AttributeDecl(Static,VarDecl(Id($studentList),ArrayType(40,StringType))),MethodDecl(Id(addStudent),Instance,[param(Id(newStu),ClassType(Id(Student)))],Block([AssignStmt(ArrayCell(FieldAccess(Id(RommSSaaa),Id($studentList)),[FieldAccess(Id(RommSSaaa),Id($NoStu))]),Id(newStu))]))]),ClassDecl(Id(Student),[])])"
+        self.assertTrue(TestAST.test(input, expect, 395))
+
+    def test_396(self):
+        input = """
+        Class RommSSaaa{
+                Var $NoStu : Int = 0;
+                Var $studentList: Array[String, 40];
+                addStudent(newStu: Student){
+                     RommSSaaa::$studentList.append(newStu);
+                } 
+            }
+        """
+        expect = "Program([ClassDecl(Id(RommSSaaa),[AttributeDecl(Static,VarDecl(Id($NoStu),IntType,IntLit(0))),AttributeDecl(Static,VarDecl(Id($studentList),ArrayType(40,StringType))),MethodDecl(Id(addStudent),Instance,[param(Id(newStu),ClassType(Id(Student)))],Block([Call(FieldAccess(Id(RommSSaaa),Id($studentList)),Id(append),[Id(newStu)])]))])])"
+        self.assertTrue(TestAST.test(input, expect, 396))
+
+    def test_397(self):
+        input = """
+        Class Student{
+                Constructor(){
+                    RommSSaaa::$NoStu = RommSSaaa::$NoStu + 1;
+                }
+                Destructor(){}
+            }
+        """
+        expect = "Program([ClassDecl(Id(Student),[MethodDecl(Id(Constructor),Instance,[],Block([AssignStmt(FieldAccess(Id(RommSSaaa),Id($NoStu)),BinaryOp(+,FieldAccess(Id(RommSSaaa),Id($NoStu)),IntLit(1)))])),MethodDecl(Id(Destructor),Instance,[],Block([]))])])"
+        self.assertTrue(TestAST.test(input, expect, 397))
+
+    def test_398(self):
+        input = """
+        Class Student{
+                Constructor(){
+                    RommSSaaa::$NoStu = RommSSaaa::$NoStu + 1;
+                }
+                Destructor(){
+                    RommSSaaa::$NoStu = RommSSaaa::$NoStu - 1;
+                }
+            }
+        """
+        expect = "Program([ClassDecl(Id(Student),[MethodDecl(Id(Constructor),Instance,[],Block([AssignStmt(FieldAccess(Id(RommSSaaa),Id($NoStu)),BinaryOp(+,FieldAccess(Id(RommSSaaa),Id($NoStu)),IntLit(1)))])),MethodDecl(Id(Destructor),Instance,[],Block([AssignStmt(FieldAccess(Id(RommSSaaa),Id($NoStu)),BinaryOp(-,FieldAccess(Id(RommSSaaa),Id($NoStu)),IntLit(1)))]))])])"
+        self.assertTrue(TestAST.test(input, expect, 398))
+
+    def test_399(self):
+        input = """
+        Class Student{
+                learn(){
+                    Self.print("Learning");   
+                }
+
+                goToSchool(){
+                    Self.byeMom();
+                    Self.byeDad("by dad");    
+                }
+
+                Constructor(){
+                    RommSSaaa::$NoStu = RommSSaaa::$NoStu + 1;
+                }
+                Destructor(){
+                    RommSSaaa::$NoStu = RommSSaaa::$NoStu - 1;
+                }
+            }
+        """
+        expect = "Program([ClassDecl(Id(Student),[MethodDecl(Id(learn),Instance,[],Block([Call(Self(),Id(print),[StringLit(Learning)])])),MethodDecl(Id(goToSchool),Instance,[],Block([Call(Self(),Id(byeMom),[]),Call(Self(),Id(byeDad),[StringLit(by dad)])])),MethodDecl(Id(Constructor),Instance,[],Block([AssignStmt(FieldAccess(Id(RommSSaaa),Id($NoStu)),BinaryOp(+,FieldAccess(Id(RommSSaaa),Id($NoStu)),IntLit(1)))])),MethodDecl(Id(Destructor),Instance,[],Block([AssignStmt(FieldAccess(Id(RommSSaaa),Id($NoStu)),BinaryOp(-,FieldAccess(Id(RommSSaaa),Id($NoStu)),IntLit(1)))]))])])"
+        self.assertTrue(TestAST.test(input, expect, 399))

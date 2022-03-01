@@ -1,1 +1,0 @@
-Program([ClassDecl(Id(D),Id(__p),[]),ClassDecl(Id(c),[]),ClassDecl(Id(_73_),[]),ClassDecl(Id(I_),Id(C),[MethodDecl(Id(Destructor),Instance,[],Block([Block([Call(Id(l),Id($0V4___),[])])]))])])

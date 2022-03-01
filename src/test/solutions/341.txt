@@ -1,1 +1,0 @@
-Program([ClassDecl(Id(A),Id(B),[AttributeDecl(Static,VarDecl(Id($a),ArrayType(3,IntType),[IntLit(1),IntLit(1),IntLit(1)]))])])

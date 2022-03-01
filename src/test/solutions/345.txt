@@ -1,1 +1,0 @@
-Program([ClassDecl(Id(A),Id(B),[MethodDecl(Id(Foo),Instance,[],Block([If(IntLit(1),Block([]))]))])])
